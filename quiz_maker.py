@@ -16,7 +16,7 @@ def set_document(title_list,category,min_text_len,min_textlist_len):
                 add_text_list.append(text)
             if(len(add_text_list)>min_textlist_len):
                 for re_text in add_text_list:
-                    parsed_text=tagger.parse("re_text")
+                    parsed_text=tagger.parse(re_text)
                     parsed_words=parsed_text.split("\n")
                     for word in parsed_words:
                 
