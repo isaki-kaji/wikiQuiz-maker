@@ -15,8 +15,14 @@ def set_document(title_list,category,min_text_len,min_textlist_len):
             if(len(nihongo_text)>min_text_len):
                 add_text_list.append(text)
             if(len(add_text_list)>min_textlist_len):
+                taggered_list=[]
                 for re_text in add_text_list:
                     parsed_text=tagger.parse(re_text)
                     parsed_words=parsed_text.split("\n")
-                    for word in parsed_words:
+                    for i in parsed_words:
+                        index = i.find("\t")
+                        if index != -1: 
+                            result = i[:index]
+                            #タイトルとの重複を調べるやつ
+                            taggered_list.append(result)
                 
