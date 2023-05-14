@@ -4,6 +4,13 @@ import MeCab
 import neologdn
 wikipedia.set_lang("ja")
 
+def count_overlap(str1, str2):
+    count = 0
+    for i in range(len(str1)):
+        if str1[i:] in str2:
+            count += 1
+    return count
+
 def set_document(title_list,category,min_text_len,min_textlist_len):
     tagger=MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd/')
     for title in title_list:
@@ -23,6 +30,6 @@ def set_document(title_list,category,min_text_len,min_textlist_len):
                         index = i.find("\t")
                         if index != -1: 
                             result = i[:index]
-                            #タイトルとの重複を調べるやつ
+                            if((result==title) or ((count_overlap(result,title)-len(result)==0) and (len(result)>1 and (bool(re.match(r'^[\u4E00-\u9FD0]+$',result))==True)))):
+                                result="〇〇"
                             taggered_list.append(result)
-                
