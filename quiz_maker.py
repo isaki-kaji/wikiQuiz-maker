@@ -2,6 +2,7 @@ import wikipedia
 import re
 import MeCab
 import neologdn
+import datetime
 wikipedia.set_lang("ja")
 
 def count_overlap(str1, str2):
@@ -15,7 +16,9 @@ def set_document(title_list,category,min_text_len,min_textlist_len):
     tagger=MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd/')
     for title in title_list:
         add_text_list=[]
-        text_list=wikipedia.page(title).content.strip().split("\n")
+        final_list=[]
+        page=wikipedia.page(title)
+        text_list=page.content.strip().split("\n")
         for text in text_list:
             text=re.sub(r'[\(\（][^()\（\）]*[\)\）]', '', text)
             nihongo_text=re.sub(r"[\a-zA-Z0-9_]","",text)
@@ -33,3 +36,11 @@ def set_document(title_list,category,min_text_len,min_textlist_len):
                             if((result==title) or ((count_overlap(result,title)-len(result)==0) and (len(result)>1 and (bool(re.match(r'^[\u4E00-\u9FD0]+$',result))==True)))):
                                 result="〇〇"
                             taggered_list.append(result)
+                    final_list.append(taggered_list)
+        doc_ref = db.collection(category).document(title)
+        doc_ref.set({
+            "title":title,
+            "text":final_list,
+            "url":page.url,
+            "更新日":datetime.date.today(),
+        })
